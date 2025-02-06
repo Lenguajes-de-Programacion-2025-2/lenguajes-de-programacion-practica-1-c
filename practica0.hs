@@ -8,9 +8,7 @@ module Practica0 where
 
 buscar::[Int]->Int->Bool
 buscar [] _ = False
-buscar (x:xs) e
-  | x == e    = True
-  | otherwise = buscar xs e
+buscar (x:xs) e = if x == e then True else buscar xs e
 
 
 --Funcion sumar_lista : Dada una Lista de Entero , regresa la suma de sus elementos
@@ -34,9 +32,7 @@ sumar_listaAux acc (x:xs) = sumar_listaAux (acc + x) xs
 --Funcion filter toma un predicado (funcion que regresa booleano) y filtra los elementos la lista de entrada  dada la condicion
 filterB:: (a -> Bool) -> [a] -> [a]
 filterB _ [] = []
-filterB p (x:xs)
-  | p x       = x : filterB p xs
-  | otherwise = filterB p xs
+filterB p (x:xs) = if p x then x : filterB p xs else filterB p xs
 
 --Implementa una funcion llamada mapear que reciba como argumento una funcion y aplique esta funcion a una lista
 mapear:: (a->b) -> [a] -> [b]
