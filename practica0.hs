@@ -7,21 +7,25 @@ module Practica0 where
 --En otro caso regresa False 
 
 buscar::[Int]->Int->Bool
-buscar [] _ = error "Sin implementar"
-
+buscar [] _ = False
+buscar (x:xs) e
+  | x == e    = True
+  | otherwise = buscar xs e
 
 
 --Funcion sumar_lista : Dada una Lista de Entero , regresa la suma de sus elementos
 --Implementala con recursion de Cola
 sumar_lista::[Int]->Int
-sumar_lista p = error "Sin implementar"
-
+sumar_lista = sumar_listaAux 0
 
 
 --Implementa una funcion recursiva de forma "ordinaria" y despues implementala con recursion de cola
 --Usa los comandos vistos en clase para comparar tiempo y memoria usados y dado el resultado describe que sucedio
 --Y porque crees que haya sido asi
 -- :s +t (en el ghci  para ver la estadisticas )
+sumar_listaAux :: Int -> [Int] -> Int
+sumar_listaAux acc [] = acc
+sumar_listaAux acc (x:xs) = sumar_listaAux (acc + x) xs
 
 
 --
@@ -29,18 +33,20 @@ sumar_lista p = error "Sin implementar"
 
 --Funcion filter toma un predicado (funcion que regresa booleano) y filtra los elementos la lista de entrada  dada la condicion
 filterB:: (a -> Bool) -> [a] -> [a]
-filterB p [] = error "Sin mplementar"
+filterB _ [] = []
+filterB p (x:xs)
+  | p x       = x : filterB p xs
+  | otherwise = filterB p xs
 
 --Implementa una funcion llamada mapear que reciba como argumento una funcion y aplique esta funcion a una lista
 mapear:: (a->b) -> [a] -> [b]
-mapear f []  = error "Sin implementar"
-
+mapear _ [] = []
+mapear f (x:xs) = f x : mapear f xs
 
 --Decima extra : .2
 --Forma comprehension
 mapear_:: (a->b) -> [a] -> [b]
-mapear_ f list  = error "Sin implementar"
-
+mapear_ f list = [f x | x <- list]
 
 
 
