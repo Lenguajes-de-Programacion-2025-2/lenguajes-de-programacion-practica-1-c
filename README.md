@@ -2,7 +2,7 @@
 
 # Practica 0
 
-> Lógica Computacional.  
+> Lenguajes de Programación.  
 > Semestre 2025-2.  
 > Fernando Abigail Galicia Mendoza.  
 > Mauricio Ayala Morales.
