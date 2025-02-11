@@ -53,7 +53,8 @@ data Tree a = Empty
             | Node a (Tree a) (Tree a)
             deriving (Show, Eq)
 
-
+arbolBinarioEjemplo :: Num a =>  Tree a
+arbolBinarioEjemplo = Node 1 (Node 2 (Node 4 Empty Empty) (Node 5 Empty Empty)) (Node 3 Empty Empty)
 
 --Dada la definicion de arbol binario has una funcion que haga un recorrido pre order
 preorder:: Tree a -> [a]
