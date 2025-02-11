@@ -127,7 +127,19 @@ graficaPrueba = [(1, [2]), (2, [3,4]), (3, [4]), (4, [1])]
 --La siguiente funcion verfiica que la grafica es un arbol 
 --Tip : Recuerda que un arbol es una grafica conexa y sin ciclos
 isTree :: Graph -> Bool
-isTree []  = True
+isTree graph = isConnected graph && not (hasCycle graph)
+
+aux_filter :: Eq a => (a -> Bool) -> [a] -> Bool
+aux_filter p xs = if (filterB p xs) == [] then False else True
+
+hasCycle :: Graph -> Bool
+hasCycle graph = aux_filter (detectCycle graph []) (obtenVertices graph)
+
+detectCycle :: Graph -> [Vertex] -> Vertex -> Bool
+detectCycle graph visited v
+    | v `elem` visited = True
+    | otherwise = aux_filter (detectCycle graph (v : visited)) (vecinos graph v)
+    
 -- isTree ((v, ns):xs) = isConnected ((v, ns):xs) && not (tieneCiclos ((v, ns):xs) 1)
 
 -- si de 5 llego a 4 y de los vecinos de 4 hay alguna forma de llegar a 5 entonces hay
