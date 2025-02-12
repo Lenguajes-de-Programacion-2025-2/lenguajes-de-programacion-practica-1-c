@@ -1,6 +1,5 @@
 module Practica0 where
 
-
 {-- Recursion y recursion de Cola --}
 
 --Funcion buscar : Dada una lista de Enteros y elemento , Regresa verdadero en caso de que el elemento se encuentre en la lista
@@ -128,7 +127,7 @@ graficaPrueba = [(1, [2]), (2, [3,4]), (3, [4]), (4, [1])]
 --La siguiente funcion verfiica que la grafica es un arbol 
 --Tip : Recuerda que un arbol es una grafica conexa y sin ciclos
 isTree :: Graph -> Bool
-isTree graph = isConnected graph && not (hasCycle graph)
+isTree graph = isConnected graph && not (hasCycle graph || tieneCiclos graph 1)
 
 aux_filter :: Eq a => (a -> Bool) -> [a] -> Bool
 aux_filter p xs = if (filterB p xs) == [] then False else True
@@ -141,26 +140,33 @@ detectCycle graph visited v
     | v `elem` visited = True
     | otherwise = aux_filter (detectCycle graph (v : visited)) (vecinos graph v)
     
--- isTree ((v, ns):xs) = isConnected ((v, ns):xs) && not (tieneCiclos ((v, ns):xs) 1)
+algunoEnLista :: (Eq a) => [a] -> [a] -> Bool
+algunoEnLista xs ys = any (`elem` ys) xs
 
--- si de 5 llego a 4 y de los vecinos de 4 hay alguna forma de llegar a 5 entonces hay
--- un ciclo, necesito comparar eso para cada vertice hasta recorrer todos los vertices
--- por cada uno de los vertices revisa sus vecinos, si en los vecinos de este vertice 
--- aparece el vertice original entonces tiene un ciclo, si no aparece no lo tiene, pero revisa 
--- los otros hasta terminar la lista, en ese caso no tiene ciclos
---1 tiene de vecino a 2, se guarda, si 2 tiene de vecino a 
--- tieneCiclos :: Graph -> Vertex -> Bool
---tieneCiclos [] x = False
---tieneCiclos ((v, ns):xs) 0 = False
---tieneCiclos ((v, ns):xs) x = if head (ordenarVertices (vecinos ((v, ns):xs) x)) `elem` (vecinos ((v, ns):xs) (x-1))
-  --  then True
-  --  else if vecinos ((v, ns):xs) x == []
-  --  then tieneCiclos ((v, ns):xs) (x+1)
-  --  else if x > length ((v, ns):xs) then False
-  --  else tieneCiclos ((v, ns):xs) (x+1)
+tieneCiclos :: Graph -> Vertex -> Bool
+tieneCiclos g x = if (vecinos g x) == [] 
+    then tieneCiclos g (x+1)
+    else if algunoEnLista (dfs g (head (vecinos g x)) []) (dfs g (siguienteElemento (vecinos g x) (-1) (head (vecinos g x))) [])
+    then True
+    else if x > length g then False
+    else False
+
+-- tieneCiclosRecursivo g x acc = tieneCiclos g x 
+
+-- funcion auxiliar que nos da el siguiente elemnto de los vecinos de un nodo, de esta forma podemos
+-- comparar el dfs de el primer vecino con el dfs del segundo
+siguienteElemento :: Eq a => [a] -> a -> a -> a
+siguienteElemento [] def _ = def
+siguienteElemento [_] def _ = def
+siguienteElemento (x:y:xs) def buscado
+    | x == buscado = y  -- Si encontramos el elemento, devolvemos el siguiente
+    | otherwise = siguienteElemento (y:xs) def buscado
 
 arbolPrueba :: Graph
 arbolPrueba = [(1, [2,3]), (2, [4]), (3, [5]), (4, []), (5, [6]), (6, [])]
+
+arbolPrueba2 :: Graph
+arbolPrueba2 = [(1, [2,3]), (2, [4]), (3, [5,8]), (4, []), (5, [6, 7, 8]), (6, []), (7, []), (8, [])]
 
 verticeSum :: Int -> Vertex
 verticeSum x = x+1
