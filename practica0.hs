@@ -127,7 +127,7 @@ graficaPrueba = [(1, [2]), (2, [3,4]), (3, [4]), (4, [1])]
 --La siguiente funcion verfiica que la grafica es un arbol 
 --Tip : Recuerda que un arbol es una grafica conexa y sin ciclos
 isTree :: Graph -> Bool
-isTree graph = isConnected graph && not (hasCycle graph || tieneCiclos graph 1)
+isTree graph = isConnected graph && not (hasCycle graph || any (tieneCiclos graph ) (obtenVertices graph))
 
 aux_filter :: Eq a => (a -> Bool) -> [a] -> Bool
 aux_filter p xs = if (filterB p xs) == [] then False else True
@@ -144,14 +144,16 @@ algunoEnLista :: (Eq a) => [a] -> [a] -> Bool
 algunoEnLista xs ys = any (`elem` ys) xs
 
 tieneCiclos :: Graph -> Vertex -> Bool
-tieneCiclos g x = if (vecinos g x) == [] 
+tieneCiclos g x = if x > length g
+    then False
+    else if (vecinos g x) == []
     then tieneCiclos g (x+1)
     else if algunoEnLista (dfs g (head (vecinos g x)) []) (dfs g (siguienteElemento (vecinos g x) (-1) (head (vecinos g x))) [])
     then True
     else if x > length g then False
     else False
 
--- tieneCiclosRecursivo g x acc = tieneCiclos g x 
+tieneCiclosRecursivo g x acc = any (tieneCiclos g) (obtenVertices g)
 
 -- funcion auxiliar que nos da el siguiente elemnto de los vecinos de un nodo, de esta forma podemos
 -- comparar el dfs de el primer vecino con el dfs del segundo
@@ -165,8 +167,8 @@ siguienteElemento (x:y:xs) def buscado
 arbolPrueba :: Graph
 arbolPrueba = [(1, [2,3]), (2, [4]), (3, [5]), (4, []), (5, [6]), (6, [])]
 
-arbolPrueba2 :: Graph
-arbolPrueba2 = [(1, [2,3]), (2, [4]), (3, [5,8]), (4, []), (5, [6, 7, 8]), (6, []), (7, []), (8, [])]
+noEsarbolPrueba :: Graph
+noEsarbolPrueba = [(1, [2,3]), (2, [4]), (3, [5,8]), (4, []), (5, [6, 7]), (6, [3]), (7, []), (8, [])]
 
 verticeSum :: Int -> Vertex
 verticeSum x = x+1
