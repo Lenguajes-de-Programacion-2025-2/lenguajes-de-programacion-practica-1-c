@@ -80,7 +80,14 @@ isConnected disconnectedGraph
  Regresa: False
 
 9. isTree 
-
+isTree connectedGraph 
+ Regresa: False
+isTree disconnectedGraph 
+ Regresa: False
+isTree arbolPrueba 
+ Regresa: True
+isTree noEsarbolPrueba  
+ Regresa: False
 
 10. leafSum
 leafSum arbolBinarioEjemplo 

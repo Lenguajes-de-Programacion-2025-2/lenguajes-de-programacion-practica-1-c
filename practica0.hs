@@ -129,20 +129,36 @@ graficaPrueba = [(1, [2]), (2, [3,4]), (3, [4]), (4, [1])]
 isTree :: Graph -> Bool
 isTree graph = isConnected graph && not (hasCycle graph || any (tieneCiclos graph ) (obtenVertices graph))
 
+-- Auxiliar para la funcion que detecta los ciclos
 aux_filter :: Eq a => (a -> Bool) -> [a] -> Bool
 aux_filter p xs = if (filterB p xs) == [] then False else True
 
 hasCycle :: Graph -> Bool
 hasCycle graph = aux_filter (detectCycle graph []) (obtenVertices graph)
 
+-- Esta funcion detecta ciclos "directos" es decir detecta los ciclos que son del estilo
+-- [(1, [2]), (2,[1])] o tambien [(1, [2, 3]), (2,[4]), (3, [1])] entre otros
 detectCycle :: Graph -> [Vertex] -> Vertex -> Bool
 detectCycle graph visited v
     | v `elem` visited = True
     | otherwise = aux_filter (detectCycle graph (v : visited)) (vecinos graph v)
     
+-- Esta función auxiliar nos dice si alguno de los elementos de una lista pertenece a otra
+-- Por ejemplo si tenemos la lista [1,2,3] y la [4,5,3] nos daría True ya que 3 aparece en ambas
+-- La usamos en tieneCiclos para detectar si un vertice aparece en el dfs de los vecinos de otro vertice
+-- la idea es que, si tenemos un vertice "x", si un vertice "y" aparece más de una vez en el dfs de los 
+-- vecinos del vertice x, significa que hay un ciclo, ya que habría más de una forma de llegar
+-- al mismo vertice "y" partiendo de un mismo vertice "x". 
 algunoEnLista :: (Eq a) => [a] -> [a] -> Bool
 algunoEnLista xs ys = any (`elem` ys) xs
 
+-- Esta funcion encuentra ciclos que no son tan directos de ver, como ya lo explicamos en la
+-- funcion anterior. Tiene muchjos if ya que debemos ser cuidadosos porque si no le damos
+-- un limite a x se cicla, por eso el limite es la longitud de g, a lo más va a aplicar el 
+-- algoritmo n veces, con n siendo el numero de vertices que existen
+-- Y el otro if es porque si intentaramos el head de un vertice que no tiene vecinos nos
+-- lanzaría un error ya que al ser la lista vacia no tiene cabeza, con esos
+-- if ya no ocurre nada inesperado.
 tieneCiclos :: Graph -> Vertex -> Bool
 tieneCiclos g x = if x > length g
     then False
@@ -153,10 +169,10 @@ tieneCiclos g x = if x > length g
     else if x > length g then False
     else False
 
-tieneCiclosRecursivo g x acc = any (tieneCiclos g) (obtenVertices g)
-
 -- funcion auxiliar que nos da el siguiente elemnto de los vecinos de un nodo, de esta forma podemos
--- comparar el dfs de el primer vecino con el dfs del segundo
+-- comparar el dfs de el primer vecino con el dfs del segundo vecino, nos ayuda a prevenir 
+-- un error, ya que en caso de que no exista un elemento siguiente, o en caso de que la lista sea
+-- vacia regresa un valor por defecto, que en este caso es -1, lo cuál le permite continuar
 siguienteElemento :: Eq a => [a] -> a -> a -> a
 siguienteElemento [] def _ = def
 siguienteElemento [_] def _ = def
@@ -169,9 +185,6 @@ arbolPrueba = [(1, [2,3]), (2, [4]), (3, [5]), (4, []), (5, [6]), (6, [])]
 
 noEsarbolPrueba :: Graph
 noEsarbolPrueba = [(1, [2,3]), (2, [4]), (3, [5,8]), (4, []), (5, [6, 7]), (6, [3]), (7, []), (8, [])]
-
-verticeSum :: Int -> Vertex
-verticeSum x = x+1
 
 --La siguiente funcion regresa a suma de las hojas del arbol
 leafSum:: Tree Int -> Int
